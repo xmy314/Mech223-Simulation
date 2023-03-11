@@ -1,0 +1,11 @@
+meta_property:
+  save_folder_name: r20_8sg_5rfc_midres
+  time_step: 0.001
+  x_intial_max: 0.5
+  x_intial_min: 0
+  y_intial_max: 2
+  y_intial_min: 0.25
+simulation_property:
+  ball_radius: 0.02
+  density: 8000
+  rolling_friction_coefficient: 1.0e-05
