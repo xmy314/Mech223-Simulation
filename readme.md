@@ -4,8 +4,6 @@ This is a simulation written for my MECH 223 course. It simulates the behaviour 
 
 The principle of the physical simulation is newtonian mechanics. The geometrical constraints is incorported with conservation energy, forced displacement in the normal direction, and forced tangency of the velocity vector.
 
----
-
 # How to use this github
 
 ## How to setup
@@ -71,5 +69,5 @@ The right plot is the energy over time graph of the few filtered out trajectorie
 
 ## Profiling
 
-1. to run: `python -m cProfile -o simulation.profile simulation.py`
-2. to see: `snakeviz simulation.profile`
+1. To run: `python -m cProfile -o simulation.profile simulation.py`
+2. To see: `snakeviz simulation.profile`
