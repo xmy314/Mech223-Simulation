@@ -8,6 +8,11 @@ The principle of the physical simulation is newtonian mechanics. The geometrical
 
 # How to use this github
 
+## How to setup
+
+1. Install python.
+2. `python -m pip install -r requirements.txt`
+
 ## How to run a simulation
 
 To start a new simulation:
