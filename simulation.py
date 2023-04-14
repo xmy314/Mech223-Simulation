@@ -56,7 +56,7 @@ class Condition:
             # the following two are quick hacks to prevent glitching.
             # scarfices accuracy overall for more less glitch
             # use energy conservation to get a "possible" result
-            energy = inertia*self.position[2]*9.81 + (0.5+0.4)*inertia*(np.linalg.norm(self.velocity))**2
+            energy = inertia*self.position[2]*9.81 + 0.5*inertia*(np.linalg.norm(self.velocity))**2
 
             # force position tangency
             self.position = self.position-(self.contact_distance-radius)*self.unit_normal
@@ -64,7 +64,11 @@ class Condition:
             remaining_energy = energy-inertia*self.position[2]*9.81
             if remaining_energy <= 0:
                 remaining_energy = 0
-            remaining_velocity = np.sqrt(remaining_energy/((0.9)*inertia))
+            remaining_velocity = np.sqrt(2*remaining_energy/(inertia))
+
+            # change_d = self.contact_distance-radius
+            # change_v = np.linalg.norm(remaining_velocity*self.unit_velocity-self.velocity)/np.linalg.norm(self.velocity)
+            # print(f"d: {change_d:.10f},v: {change_v:.10f}")
 
             # force velocity tangency
             self.velocity = remaining_velocity*self.unit_velocity
@@ -77,19 +81,27 @@ class Condition:
         force += inertia*np.array([0, 0, -9.81])
 
         # drag
-        force += 0.5*0.001293*(-self.velocity*abs(np.linalg.norm(self.velocity)))*0.47*pi*(radius**2)
+        # force += 0.5*0.001293*(-self.velocity*abs(np.linalg.norm(self.velocity)))*0.47*pi*(radius**2)
 
-        # normal # assume no curvature
+        # normal
         if self.is_in_contact:
-            force_in_plane = -np.dot(force, self.unit_normal)
-            if force_in_plane > 0:
-                force -= force_in_plane*self.unit_normal
+            desired_acc_out = well.getNormalAcceleration(self.contact_position,self.velocity)
+            # desired_acc_out = 0
+            desired_force_out = desired_acc_out*(inertia)
+            force_out = np.dot(force, self.unit_normal)
+            if force_out < desired_force_out:
+                normal_force = (desired_force_out-force_out)*self.unit_normal
+                # TODO: even though normal force is perpendicular to velocity, it only does no work for very small timesteps.
+                proportion=time_step*np.linalg.norm(normal_force/inertia)/np.linalg.norm(self.velocity)
+                print(f"{proportion:7.5f}")
+                force+=normal_force
 
-        # apply forces
-        acc = force/inertia
+        # apply forces 
+        acc = force/(inertia)
 
-        self.velocity = self.velocity+acc*time_step
         self.position = self.position+self.velocity*time_step
+        self.velocity = self.velocity+acc*time_step
+        # self.position = self.position+self.velocity*time_step+0.5*acc*(time_step**2)
 
         self.time += time_step
 
@@ -161,7 +173,7 @@ while True:
             break
 
         condition.next()
-    print(f"k:{k} t:{condition.time}")
+    print(f"k:{k:7}     t:{condition.time:7.3f}")
 
     data = np.array(data).T
     with open(os.path.join(save_folder_path, "sequential_save.npy"), 'ab+') as f:

@@ -4,3 +4,4 @@ mech223env
 .DS_Store
 simulation_assignment.py
 simulation.profile
+debug/

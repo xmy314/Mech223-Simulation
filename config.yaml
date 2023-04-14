@@ -1,5 +1,5 @@
 meta_property:
-  save_folder_name: r20_8sg_5rfc_midres
+  save_folder_name: r20_8sg_5rfc_test
   time_step: 0.001
   x_intial_max: 0.5
   x_intial_min: 0
